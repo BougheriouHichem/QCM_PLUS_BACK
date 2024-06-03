@@ -2,36 +2,18 @@ package com.pfe.qcm_plus_back.entity;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+
+import jakarta.persistence.MappedSuperclass;
 
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type")
+
+@MappedSuperclass
 public abstract class Utilisateur {
 
-	
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
-	
-	@Column(nullable = false, unique = true)
     private String email;
-
     private String password;
-    
-	
     private Date dateCreated;
-
     private String firstName;
-
     private String lastName;
 
 	public String getEmail() {
