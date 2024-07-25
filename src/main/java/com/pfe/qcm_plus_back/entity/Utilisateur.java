@@ -2,15 +2,17 @@ package com.pfe.qcm_plus_back.entity;
 
 import java.util.Date;
 
-
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
 
 
 @MappedSuperclass
 public abstract class Utilisateur {
-
+	
+	@Column(unique = true)
     private String email;
+	
     private String password;
     private Date dateCreated;
     private String firstName;
