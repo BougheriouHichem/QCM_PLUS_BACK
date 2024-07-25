@@ -4,7 +4,9 @@ import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import org.hibernate.annotations.CreationTimestamp;
 
 
 @MappedSuperclass
@@ -14,7 +16,9 @@ public abstract class Utilisateur {
     private String email;
 	
     private String password;
-    private Date dateCreated;
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCreated;
     private String firstName;
     private String lastName;
 
