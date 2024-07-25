@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.pfe.qcm_plus_back.entity.Admin;
 import com.pfe.qcm_plus_back.entity.Stagiaire;
@@ -25,8 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private StagiaireRepository stagiaireRepository;
-    
-    @Autowired
+
     private PasswordEncoder passwordEncoder;
 
 
