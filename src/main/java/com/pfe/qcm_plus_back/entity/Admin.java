@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name = "admin")
 public class Admin extends Utilisateur{
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 }

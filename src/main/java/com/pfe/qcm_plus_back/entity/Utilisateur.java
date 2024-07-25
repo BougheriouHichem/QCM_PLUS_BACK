@@ -10,11 +10,11 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Utilisateur {
 
-	private String email;
-	private String password;
-	private Date dateCreated;
-	private String firstName;
-	private String lastName;
+    private String email;
+    private String password;
+    private Date dateCreated;
+    private String firstName;
+    private String lastName;
 
 	public String getEmail() {
 		return email;

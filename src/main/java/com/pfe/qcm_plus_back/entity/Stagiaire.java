@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name = "stagiaire")
 public class Stagiaire extends Utilisateur{
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -20,4 +20,5 @@ public class Stagiaire extends Utilisateur{
     // isActive() ==> getter of isActive
 
     //public void setActive(boolean active) setter
+  
 }
