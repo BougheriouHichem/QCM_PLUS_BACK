@@ -3,17 +3,18 @@ package com.pfe.qcm_plus_back.entity;
 import java.util.Date;
 
 
-public class Utilisateur {
+import jakarta.persistence.MappedSuperclass;
 
-    private String email;
 
-    private String password;
 
-    private Date dateCreated;
+@MappedSuperclass
+public abstract class Utilisateur {
 
-    private String firstName;
-
-    private String lastName;
+	private String email;
+	private String password;
+	private Date dateCreated;
+	private String firstName;
+	private String lastName;
 
 	public String getEmail() {
 		return email;
