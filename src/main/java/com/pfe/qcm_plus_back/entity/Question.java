@@ -1,11 +1,15 @@
 package com.pfe.qcm_plus_back.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "question")
 public class Question {
 
@@ -44,53 +48,6 @@ public class Question {
         this.reponsesCorrectes = reponsesCorrectes;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Questionnaire getQuestionnaire() {
-        return questionnaire;
-    }
-
-    public void setQuestionnaire(Questionnaire questionnaire) {
-        this.questionnaire = questionnaire;
-    }
-
-    public String getQuestionTexte() {
-        return questionTexte;
-    }
-
-    public void setQuestionTexte(String questionTexte) {
-        this.questionTexte = questionTexte;
-    }
-
-    public Set<String> getChoix() {
-        return choix;
-    }
-
-    public void setChoix(Set<String> choix) {
-        this.choix = choix;
-    }
-
-    public int getNbreReponses() {
-        return nbreReponses;
-    }
-
-    public void setNbreReponses(int nbreReponses) {
-        this.nbreReponses = nbreReponses;
-    }
-
-    public Set<Integer> getReponsesCorrectes() {
-        return reponsesCorrectes;
-    }
-
-    public void setReponsesCorrectes(Set<Integer> reponsesCorrectes) {
-        this.reponsesCorrectes = reponsesCorrectes;
-    }
 
     @Override
     public String toString() {

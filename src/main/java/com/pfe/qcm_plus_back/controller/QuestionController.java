@@ -23,39 +23,32 @@ public class QuestionController {
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable Long id) {
         Question question = questionService.findById(id);
-        if (question == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(question);
+        return question != null ? ResponseEntity.ok(question) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public Question createQuestion(@RequestBody Question question) {
-        return questionService.save(question);
+    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
+        Question createdQuestion = questionService.save(question);
+        return ResponseEntity.ok(createdQuestion);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Question> updateQuestion(@PathVariable Long id, @RequestBody Question questionDetails) {
-        Question question = questionService.findById(id);
-        if (question == null) {
+        try {
+            Question updatedQuestion = questionService.updateQuestion(id, questionDetails);
+            return ResponseEntity.ok(updatedQuestion);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        question.setQuestionTexte(questionDetails.getQuestionTexte());
-        question.setChoix(questionDetails.getChoix());
-        question.setNbreReponses(questionDetails.getNbreReponses());
-        question.setReponsesCorrectes(questionDetails.getReponsesCorrectes());
-        Question updatedQuestion = questionService.save(question);
-        return ResponseEntity.ok(updatedQuestion);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
-        Question question = questionService.findById(id);
-        if (question == null) {
+        try {
+            questionService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        questionService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }
-
