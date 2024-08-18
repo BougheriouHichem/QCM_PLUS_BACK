@@ -7,48 +7,52 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
 
+    private final QuestionService questionService;
+
     @Autowired
-    private QuestionService questionService;
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
+    }
 
     @GetMapping
     public List<Question> getAllQuestions() {
-        return questionService.findAll();
+        return questionService.getAllQuestions();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable Long id) {
-        Question question = questionService.findById(id);
-        return question != null ? ResponseEntity.ok(question) : ResponseEntity.notFound().build();
+        Optional<Question> question = questionService.getQuestionById(id);
+        return question.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
-        Question createdQuestion = questionService.save(question);
-        return ResponseEntity.ok(createdQuestion);
+        Question savedQuestion = questionService.addQuestion(question);
+        return ResponseEntity.ok(savedQuestion);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Question> updateQuestion(@PathVariable Long id, @RequestBody Question questionDetails) {
-        try {
-            Question updatedQuestion = questionService.updateQuestion(id, questionDetails);
-            return ResponseEntity.ok(updatedQuestion);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Question updatedQuestion = questionService.updateQuestion(id, questionDetails);
+        return ResponseEntity.ok(updatedQuestion);
+    }
+
+    @PutMapping("/{id}/questionnaire")
+    public ResponseEntity<Question> updateQuestionnaire(@PathVariable Long id, @RequestBody Long newQuestionnaireId) {
+        Question updatedQuestion = questionService.updateQuestionnaire(id, newQuestionnaireId);
+        return ResponseEntity.ok(updatedQuestion);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
-        try {
-            questionService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        questionService.deleteQuestion(id);
+        return ResponseEntity.noContent().build();
     }
 }

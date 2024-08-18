@@ -1,7 +1,9 @@
 package com.pfe.qcm_plus_back.service;
 
 import com.pfe.qcm_plus_back.entity.Question;
+import com.pfe.qcm_plus_back.entity.Questionnaire;
 import com.pfe.qcm_plus_back.repository.QuestionRepository;
+import com.pfe.qcm_plus_back.repository.QuestionnaireRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,33 +13,57 @@ import java.util.Optional;
 @Service
 public class QuestionService {
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
+    private final QuestionnaireRepository questionnaireRepository;
 
-    public List<Question> findAll() {
+    @Autowired
+    public QuestionService(QuestionRepository questionRepository, QuestionnaireRepository questionnaireRepository) {
+        this.questionRepository = questionRepository;
+        this.questionnaireRepository = questionnaireRepository;
+    }
+
+    public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
 
-    public Question findById(Long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found on :: " + id));
+    public Optional<Question> getQuestionById(Long id) {
+        return questionRepository.findById(id);
     }
 
-    public Question save(Question question) {
+    public Question addQuestion(Question question) {
         return questionRepository.save(question);
     }
 
     public Question updateQuestion(Long id, Question questionDetails) {
-        Question existingQuestion = findById(id); // Ensures we throw if not found
-
-        Optional.ofNullable(questionDetails.getQuestionTexte()).ifPresent(existingQuestion::setQuestionTexte);
-        Optional.ofNullable(questionDetails.getChoix()).ifPresent(existingQuestion::setChoix);
-        Optional.ofNullable(questionDetails.getNbreReponses()).ifPresent(existingQuestion::setNbreReponses);
-        Optional.ofNullable(questionDetails.getReponsesCorrectes()).ifPresent(existingQuestion::setReponsesCorrectes);
-
-        return questionRepository.save(existingQuestion);
+        return questionRepository.findById(id)
+                .map(question -> {
+                    question.setQuestionTexte(questionDetails.getQuestionTexte());
+                    question.setChoix(questionDetails.getChoix());
+                    question.setNbreReponses(questionDetails.getNbreReponses());
+                    question.setReponsesCorrectes(questionDetails.getReponsesCorrectes());
+                    return questionRepository.save(question);
+                })
+                .orElseThrow(() -> new RuntimeException("Question not found"));
     }
 
-    public void deleteById(Long id) {
+    public void deleteQuestion(Long id) {
         questionRepository.deleteById(id);
+    }
+
+    // Ajout de la méthode pour modifier l'appartenance d'une question à un autre questionnaire
+    public Question updateQuestionnaire(Long questionId, Long newQuestionnaireId) {
+        // Récupérer la question par son ID
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+
+        // Récupérer le nouveau questionnaire par son ID
+        Questionnaire newQuestionnaire = questionnaireRepository.findById(newQuestionnaireId)
+                .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
+
+        // Modifier l'appartenance de la question
+        question.setQuestionnaire(newQuestionnaire);
+
+        // Sauvegarder la question mise à jour
+        return questionRepository.save(question);
     }
 }

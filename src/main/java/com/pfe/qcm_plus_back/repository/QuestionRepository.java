@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+    // Vous pouvez ajouter des méthodes de requêtes personnalisées ici si nécessaire
 }
-
-
