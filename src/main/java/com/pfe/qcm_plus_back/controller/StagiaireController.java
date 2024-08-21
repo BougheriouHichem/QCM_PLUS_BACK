@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stagiaires")
@@ -26,6 +27,14 @@ public class StagiaireController {
     public List<Stagiaire> getAllStagiaires () {
         return stagiaireService.getAllStagiaires();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Stagiaire> getStagiaireById(@PathVariable Long id) {
+        Optional<Stagiaire> stagiaire = stagiaireService.getStagiaireById(id);
+        return stagiaire.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     @PostMapping
     public ResponseEntity<?> addStagiaire(@RequestBody Stagiaire stagiaire) {

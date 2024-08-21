@@ -55,4 +55,11 @@ public class QuestionController {
         questionService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/questionnaire/{questionnaireId}")
+    public List<Question> getQuestionsByQuestionnaireId(@PathVariable Long questionnaireId) {
+        return questionService.getQuestionsByQuestionnaireId(questionnaireId);
+    }
+
+
 }
