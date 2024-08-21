@@ -3,6 +3,7 @@ package com.pfe.qcm_plus_back.service;
 import com.pfe.qcm_plus_back.entity.Stagiaire;
 import com.pfe.qcm_plus_back.repository.StagiaireRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,12 @@ public class StagiaireService {
     @Autowired
     private StagiaireRepository stagiaireRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public Stagiaire addStagiaire(Stagiaire stagiaire){
+        stagiaire.setPassword(passwordEncoder.encode(stagiaire.getPassword()));
         return stagiaireRepository.save(stagiaire);
     }
 
@@ -27,23 +32,22 @@ public class StagiaireService {
         Stagiaire stagiaire = stagiaireRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Stagiaire not found on :: " + id));
 
-        // Utilise Optional pour vérifier si chaque champ est présent avant de le mettre à jour
-        Optional.ofNullable(stagiaireDetails.getFirstName())
-                .ifPresent(stagiaire::setFirstName); // Met à jour le prénom seulement s'il est fourni
+        Optional.ofNullable(stagiaireDetails.getFirstName()).ifPresent(stagiaire::setFirstName);
+        Optional.ofNullable(stagiaireDetails.getLastName()).ifPresent(stagiaire::setLastName);
+        Optional.ofNullable(stagiaireDetails.getEmail()).ifPresent(stagiaire::setEmail);
+        Optional.ofNullable(stagiaireDetails.isActive()).ifPresent(stagiaire::setActive);
 
-        Optional.ofNullable(stagiaireDetails.getLastName())
-                .ifPresent(stagiaire::setLastName); // Met à jour le nom de famille seulement s'il est fourni
-
-        Optional.ofNullable(stagiaireDetails.getEmail())
-                .ifPresent(stagiaire::setEmail); // Met à jour l'email seulement s'il est fourni
-
-        // Pour les types primitifs comme boolean, utilisez un boolean wrapper class pour permettre null
-        Optional.ofNullable(stagiaireDetails.isActive())
-                .ifPresent(stagiaire::setActive); //// Only update if it's provided
+        // Encodage du mot de passe seulement s'il est fourni et modifié
+        if (stagiaireDetails.getPassword() != null && !stagiaireDetails.getPassword().isEmpty()) {
+            stagiaire.setPassword(passwordEncoder.encode(stagiaireDetails.getPassword()));
+        }
 
         return stagiaireRepository.save(stagiaire);
     }
 
+    public Optional<Stagiaire> getStagiaireById(Long id) {
+        return stagiaireRepository.findById(id);
+    }
 
     public void deactivateStagiaire(Long id) {
         Stagiaire stagiaire = stagiaireRepository.findById(id)

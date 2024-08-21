@@ -22,6 +22,11 @@ public class QuestionService {
         this.questionnaireRepository = questionnaireRepository;
     }
 
+    public List<Question> getQuestionsByQuestionnaireId(Long questionnaireId) {
+        return questionRepository.findAllByQuestionnaireId(questionnaireId);
+    }
+
+
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
