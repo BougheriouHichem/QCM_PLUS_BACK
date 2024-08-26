@@ -1,9 +1,9 @@
 package com.pfe.qcm_plus_back.entity;
 
 import jakarta.persistence.*;
-
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "question")
@@ -20,28 +20,20 @@ public class Question {
     @Column(name = "question_texte", nullable = false)
     private String questionTexte;
 
-    @ElementCollection
-    @CollectionTable(name = "choix", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "choix")
-    private Set<String> choix;
-
     @Column(name = "nbre_reponses", nullable = false)
     private int nbreReponses;
 
-    @ElementCollection
-    @CollectionTable(name = "reponses_correctes", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "reponse_correcte")
-    private Set<Integer> reponsesCorrectes;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Reponse[] choix;
 
     // Constructeurs, getters, setters, toString, equals, hashCode
     public Question() {}
 
-    public Question(Questionnaire questionnaire, String questionTexte, Set<String> choix, int nbreReponses, Set<Integer> reponsesCorrectes) {
+    public Question(Questionnaire questionnaire, String questionTexte, int nbreReponses) {
         this.questionnaire = questionnaire;
         this.questionTexte = questionTexte;
-        this.choix = choix;
         this.nbreReponses = nbreReponses;
-        this.reponsesCorrectes = reponsesCorrectes;
+        this.choix = new Reponse[nbreReponses]; // Initialisation du tableau avec la taille de nbreReponses
     }
 
     public Long getId() {
@@ -68,28 +60,24 @@ public class Question {
         this.questionTexte = questionTexte;
     }
 
-    public Set<String> getChoix() {
-        return choix;
-    }
-
-    public void setChoix(Set<String> choix) {
-        this.choix = choix;
-    }
-
     public int getNbreReponses() {
         return nbreReponses;
     }
 
     public void setNbreReponses(int nbreReponses) {
         this.nbreReponses = nbreReponses;
+        this.choix = new Reponse[nbreReponses]; // Mise à jour du tableau lorsque nbreReponses change
     }
 
-    public Set<Integer> getReponsesCorrectes() {
-        return reponsesCorrectes;
+    public Reponse[] getChoix() {
+        return choix;
     }
 
-    public void setReponsesCorrectes(Set<Integer> reponsesCorrectes) {
-        this.reponsesCorrectes = reponsesCorrectes;
+    public void setChoix(Reponse[] choix) {
+        if (choix.length > nbreReponses) {
+            throw new IllegalArgumentException("Le nombre de réponses ne doit pas dépasser " + nbreReponses);
+        }
+        this.choix = choix;
     }
 
     @Override
@@ -98,9 +86,8 @@ public class Question {
                 "id=" + id +
                 ", questionnaire=" + questionnaire +
                 ", questionTexte='" + questionTexte + '\'' +
-                ", choix=" + choix +
                 ", nbreReponses=" + nbreReponses +
-                ", reponsesCorrectes=" + reponsesCorrectes +
+                ", choix=" + Arrays.toString(choix) +
                 '}';
     }
 
@@ -117,3 +104,5 @@ public class Question {
         return Objects.hash(id);
     }
 }
+
+

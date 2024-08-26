@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,9 +19,13 @@ public class Reponse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stagiaire_id")
-    private Stagiaire stagiaire;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "reponse_stagiaire",
+        joinColumns = @JoinColumn(name = "reponse_id"),
+        inverseJoinColumns = @JoinColumn(name = "stagiaire_id")
+    )
+    private Set<Stagiaire> stagiaires;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
@@ -28,6 +33,9 @@ public class Reponse {
 
     @ElementCollection
     private List<String> reponses;
+
+    @Column(name = "correct", nullable = false)
+    private boolean correct;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
