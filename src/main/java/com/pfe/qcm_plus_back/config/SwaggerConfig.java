@@ -19,7 +19,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("API Documentation")
                         .version("1.0.0")
-                        .description("API documentation for Sunu Apte"));
+                        .description("API documentation"));
     }
 
 }
