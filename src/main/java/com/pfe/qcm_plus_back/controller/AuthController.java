@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 import com.pfe.qcm_plus_back.entity.Admin;
 import com.pfe.qcm_plus_back.entity.LoginRequest;
 import com.pfe.qcm_plus_back.entity.Stagiaire;
@@ -21,6 +23,9 @@ public class AuthController {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private jakarta.servlet.http.HttpServletRequest request;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         boolean isAuthenticated = userDetailsService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
@@ -31,18 +36,30 @@ public class AuthController {
             return ResponseEntity.status(401).body("Authentication failed");
         }
     }
-   
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser() {
+        userDetailsService.logout(request);
+        return ResponseEntity.ok("Logout successful");
+    }
     
     @PostMapping("/register/admin")
-    public String registerAdmin(@RequestBody Admin admin) {
-        userDetailsService.saveAdmin(admin);
-        return "Admin registered successfully!";
+    public ResponseEntity<?> registerAdmin(@RequestBody Admin admin) {
+        try {
+            userDetailsService.saveAdmin(admin);
+            return ResponseEntity.ok("Admin registered successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
     @PostMapping("/register/stagiaire")
-    public String registerStagiaire(@RequestBody Stagiaire stagiaire) {
-        userDetailsService.saveStagiaire(stagiaire);
-        return "Stagiaire registered successfully!";
+    public ResponseEntity<?> registerStagiaire(@RequestBody Stagiaire stagiaire) {
+        try {
+            userDetailsService.saveStagiaire(stagiaire);
+            return ResponseEntity.ok("Stagiaire registered successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
-        
-    }
+}

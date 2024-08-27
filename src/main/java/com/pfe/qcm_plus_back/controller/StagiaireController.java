@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stagiaires")
-@Slf4j
 public class StagiaireController {
 
     private static final Logger logger = LoggerFactory.getLogger(StagiaireController.class);
